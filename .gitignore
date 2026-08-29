@@ -1,0 +1,73 @@
+﻿# ==========================================
+# CMake Build & Output Directories
+# ==========================================
+build/
+bin/
+out/
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+*.cmake
+!CMakeLists.txt
+
+# ==========================================
+# Visual Studio / MSVC Temporary & Cache
+# ==========================================
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.vcxproj.user
+*.opensdf
+*.sdf
+*.VC.db
+*.VC.opendb
+ipch/
+
+# ==========================================
+# Build Artifacts & Binaries
+# ==========================================
+Debug/
+Release/
+x64/
+x86/
+Win32/
+*.obj
+*.ilk
+*.pdb
+*.exp
+*.lib
+*.idb
+*.tlog
+*.lastbuildstate
+*.log
+*.manifest
+*.res
+*.pch
+
+# Compiled Libraries & Executables
+*.dll
+*.exe
+
+# ==========================================
+# Local Logs & Diagnostics
+# ==========================================
+interpol_debug.log
+launcher.log
+
+# ==========================================
+# IDEs & Editors
+# ==========================================
+.vscode/
+.idea/
+*.swp
+*~
+
+# ==========================================
+# OS Generated Files
+# ==========================================
+Thumbs.db
+desktop.ini
+.DS_Store
