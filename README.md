@@ -1,6 +1,6 @@
-﻿# The Binding of Isaac: Repentance+ 60 FPS Animation Interpolation
+# The Binding of Isaac: Repentance+ 60 FPS Animation Interpolation
 
-An isolated, standalone implementation of the **60 FPS Animation Interpolation** feature from [REPENTOGON](https://github.com/TeamREPENTOGON/REPENTOGON) for vanilla **The Binding of Isaac: Repentance+ (v1.9.7.17 / J460)**.
+An isolated, standalone implementation of the **60 FPS Animation Interpolation** feature from [REPENTOGON](https://github.com/TeamREPENTOGON/REPENTOGON) for vanilla **The Binding of Isaac: Repentance+ (v1.9.7.15 / J374)**.
 
 Because this is a native proxy DLL (`dinput8.dll`) and not a Lua mod, it does not disable achievements and works during **Daily Runs** (use at your own discretion regarding any leaderboards or anti-cheat policies).
 
