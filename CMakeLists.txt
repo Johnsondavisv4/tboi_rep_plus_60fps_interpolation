@@ -4,6 +4,8 @@ project(InterPolation_vanilla C CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+
 # MinHook
 add_subdirectory(vendor/minhook)
 
@@ -12,6 +14,7 @@ set(SOURCE_FILES
     src/Config.cpp
     src/InterpolationHook.cpp
     src/dinput8.def
+    src/resource.rc
 )
 
 add_library(dinput8 SHARED ${SOURCE_FILES})
@@ -26,9 +29,10 @@ target_link_libraries(dinput8 PRIVATE
     psapi
 )
 
-# Output name must be dinput8.dll
+# Output name must be dinput8.dll with standard security flags
 set_target_properties(dinput8 PROPERTIES
     OUTPUT_NAME "dinput8"
     PREFIX ""
     SUFFIX ".dll"
+    LINK_FLAGS "/DYNAMICBASE /NXCOMPAT"
 )
