@@ -2,6 +2,7 @@
 #include "IsaacTypes.h"
 #include "Config.h"
 #include "PatternScanner.h"
+#include "GameVersion.h"
 #include <MinHook.h>
 #include <cmath>
 
@@ -18,13 +19,13 @@ static inline unsigned int GetManagerFrameCount() {
     if (!s_moduleBase) {
         s_moduleBase = (uintptr_t)GetModuleHandleA(nullptr);
     }
-    // g_Manager pointer at RVA 0x87169C
-    void** ppMgr = (void**)(s_moduleBase + 0x87169C);
+    // g_Manager address from the selected build-time profile
+    void** ppMgr = (void**)(s_moduleBase + GameVersion::ManagerRva);
     if (!ppMgr || !*ppMgr) return 0;
     uintptr_t pMgr = (uintptr_t)*ppMgr;
 
-    // Verified _framecount offset in Manager for Repentance+ J460 is 0x4ABBC
-    return *(unsigned int*)(pMgr + 0x4ABBC);
+    // Manager frame counter offset from the selected profile
+    return *(unsigned int*)(pMgr + GameVersion::FrameCountOffset);
 }
 
 // Accurate shortest-path angular difference in degrees
@@ -127,13 +128,13 @@ bool InitializeHooks() {
 
     s_moduleBase = (uintptr_t)GetModuleHandleA(nullptr);
 
-    // Pattern for AnimationLayer::RenderFrame (0x8520 in isaac-ng.exe)
-    uintptr_t pRenderFrame = PatternScanner::FindPattern("53 8B DC 83 EC 08 83 E4 F8 83 C4 04 55 8B 6B ?? 89 6C 24 ?? 8B EC 6A FF 68 ?? ?? ?? ?? 64 A1 ?? ?? ?? ?? 50 53 81 EC E8 01 00 00 A1 ?? ?? ?? ?? 33 C5 89 45 ?? 56 57 50 8D 45 ?? 64 A3 ?? ?? ?? ?? 80 79 0C 00");
+    // Pattern for AnimationLayer::RenderFrame in the selected game version
+    uintptr_t pRenderFrame = PatternScanner::FindPattern(GameVersion::RenderFramePattern);
     if (pRenderFrame) {
         MH_CreateHook((LPVOID)pRenderFrame, (LPVOID)&Hooked_RenderFrame, (LPVOID*)&oRenderFrame);
     }
 
-    // Pattern for AnimationState::Render (0x9430 in isaac-ng.exe)
+    // Shared pattern for AnimationState::Render in both supported versions
     uintptr_t pAnimStateRender = PatternScanner::FindPattern("55 8B EC 83 E4 F8 51 53 56 57 8B F9 8B 57 04 85 D2 74 34 33 F6 39 72 1C");
     if (pAnimStateRender) {
         MH_CreateHook((LPVOID)pAnimStateRender, (LPVOID)&Hooked_AnimationStateRender, (LPVOID*)&oAnimationStateRender);
