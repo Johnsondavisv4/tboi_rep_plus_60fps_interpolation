@@ -49,11 +49,9 @@ jobs:
             $package = "build/package-$version"
             New-Item -ItemType Directory -Path $package -Force | Out-Null
             Copy-Item "build/$version/Release/dinput8.dll" $package
-            Copy-Item interpol.ini, README.md $package
-            "This DLL is for Repentance+ $version only. Copy dinput8.dll and interpol.ini next to isaac-ng.exe." |
-              Set-Content "$package/GAME_VERSION.txt" -Encoding utf8
-            $archive = "dist/isaac-interpolation-$version-win32.zip"
-            Compress-Archive -Path "$package/*" -DestinationPath $archive -Force
+            Copy-Item interpol.ini $package
+            $archive = "dist/isaac-interpolation-$version.zip"
+            Compress-Archive -Path "$package/dinput8.dll", "$package/interpol.ini" -DestinationPath $archive -Force
           }
           Get-ChildItem dist -Filter *.zip | Sort-Object Name | ForEach-Object {
             $hash = (Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
@@ -67,12 +65,15 @@ jobs:
         run: |
           $ErrorActionPreference = 'Stop'
           $assets = @(Get-ChildItem dist -File | ForEach-Object { $_.FullName })
+          $versions = @(Get-Content game-versions.txt | Where-Object { $_.Trim() } | ForEach-Object { $_.Trim() })
+          if ($versions.Count -eq 0) { throw 'No supported game versions listed' }
+          $releaseTitle = "60 FPS Interpolation — Repentance+ $($versions[-1])"
           gh release view "$env:RELEASE_TAG" --json id
           if ($LASTEXITCODE -ne 0) {
-            gh release create "$env:RELEASE_TAG" --target "$env:RELEASE_COMMIT" --draft --generate-notes --title "Isaac interpolation - $env:RELEASE_TAG"
+            gh release create "$env:RELEASE_TAG" --target "$env:RELEASE_COMMIT" --draft --generate-notes --title "$releaseTitle"
             if ($LASTEXITCODE -ne 0) { throw 'Could not create draft release' }
           }
           gh release upload "$env:RELEASE_TAG" @assets --clobber
           if ($LASTEXITCODE -ne 0) { throw 'Could not upload release assets' }
-          gh release edit "$env:RELEASE_TAG" --draft=false --latest
+          gh release edit "$env:RELEASE_TAG" --title "$releaseTitle" --draft=false --latest
           if ($LASTEXITCODE -ne 0) { throw 'Could not publish release' }

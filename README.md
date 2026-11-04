@@ -47,7 +47,9 @@ The DLLs will be in `build/1.9.7.15/Release/dinput8.dll` and `build/1.9.7.17/Rel
 
 Every push to `main` automatically builds **all versions in `game-versions.txt`** and publishes a complete GitHub release. No manual tag creation or publication is required. Releases use an automatically generated `build-<run-id>` tag pointing to the source commit. You can also run the workflow manually from `main`.
 
-Each release includes one ZIP per supported game version and `SHA256SUMS.txt`. Each ZIP contains `dinput8.dll`, `interpol.ini`, the README, and a game-version notice. Publication happens only after every version builds and all packages are uploaded. Previous releases remain available.
+Release titles use the last version listed in `game-versions.txt`, for example **60 FPS Interpolation — Repentance+ 1.9.7.17**, while each release includes all supported versions.
+
+Each release includes one ZIP per supported game version, named `isaac-interpolation-<game-version>.zip`, and `SHA256SUMS.txt`. Each ZIP contains only `dinput8.dll` and `interpol.ini`. Publication happens only after every version builds and all packages are uploaded. Previous releases remain available.
 
 To support a new game version:
 
