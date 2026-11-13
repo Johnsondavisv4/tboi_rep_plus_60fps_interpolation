@@ -40,7 +40,7 @@ jobs:
           $versions = @(Get-Content game-versions.txt | Where-Object { $_.Trim() } | ForEach-Object { $_.Trim() })
           if ($versions.Count -eq 0) { throw 'No supported game versions listed' }
           foreach ($version in $versions) {
-            if ($version -notmatch '^\d+\.\d+\.\d+\.\d+$') { throw "Invalid game version: $version" }
+            if ($version -cnotmatch '^\d+\.\d+\.\d+(?:[a-z]|\.\d+)$') { throw "Invalid game version: $version" }
             cmake -S . -B "build/$version" -G "Visual Studio 17 2022" -A Win32 "-DGAME_VERSION=$version"
             if ($LASTEXITCODE -ne 0) { throw "Configuration failed for $version" }
             cmake --build "build/$version" --config Release
@@ -50,7 +50,8 @@ jobs:
             New-Item -ItemType Directory -Path $package -Force | Out-Null
             Copy-Item "build/$version/Release/dinput8.dll" $package
             Copy-Item interpol.ini $package
-            $archive = "dist/isaac-interpolation-$version.zip"
+            $edition = if ($version -match '[a-z]$') { 'repentance' } else { 'repentance-plus' }
+            $archive = "dist/isaac-interpolation-$edition-$version.zip"
             Compress-Archive -Path "$package/dinput8.dll", "$package/interpol.ini" -DestinationPath $archive -Force
           }
           Get-ChildItem dist -Filter *.zip | Sort-Object Name | ForEach-Object {

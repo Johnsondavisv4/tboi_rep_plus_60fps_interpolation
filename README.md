@@ -1,6 +1,6 @@
-# The Binding of Isaac: Repentance+ 60 FPS Animation Interpolation
+# The Binding of Isaac: 60 FPS Animation Interpolation
 
-An isolated, standalone implementation of the **60 FPS Animation Interpolation** feature from [REPENTOGON](https://github.com/TeamREPENTOGON/REPENTOGON) for vanilla **The Binding of Isaac: Repentance+ (v1.9.7.15 / J374 and v1.9.7.17 / J460)**.
+An isolated, standalone implementation of the **60 FPS Animation Interpolation** feature from [REPENTOGON](https://github.com/TeamREPENTOGON/REPENTOGON) for vanilla **The Binding of Isaac: Repentance (v1.7.9b / J835)** and **Repentance+ (v1.9.7.15 / J374 and v1.9.7.17 / J460)**.
 
 Because this is a native proxy DLL (`dinput8.dll`) and not a Lua mod, it does not disable achievements and works during **Daily Runs** (use at your own discretion regarding any leaderboards or anti-cheat policies).
 
@@ -31,13 +31,16 @@ Enabled=1
 ## Building
 
 ```powershell
+cmake -B build/1.7.9b -A Win32 "-DGAME_VERSION=1.7.9b"
+cmake --build build/1.7.9b --config Release
+
 cmake -B build/1.9.7.15 -A Win32 "-DGAME_VERSION=1.9.7.15"
 cmake --build build/1.9.7.15 --config Release
 
 cmake -B build/1.9.7.17 -A Win32 "-DGAME_VERSION=1.9.7.17"
 cmake --build build/1.9.7.17 --config Release
 ```
-The DLLs will be in `build/1.9.7.15/Release/dinput8.dll` and `build/1.9.7.17/Release/dinput8.dll`. Keep them in separate versioned packages with `interpol.ini`; both must retain the name `dinput8.dll` when installed.
+Each build produces `build/<game-version>/Release/dinput8.dll`. Keep the DLLs in separate versioned packages with `interpol.ini` and retain the name `dinput8.dll` when installing.
 
 `GAME_VERSION` defaults to `1.9.7.17`. Unsupported values are rejected by CMake. Shared interpolation code lives in `src/InterpolationHook.cpp`; version-specific addresses and patterns live in `src/GameVersion.h`.
 
@@ -49,7 +52,7 @@ Every push to `main` automatically builds **all versions in `game-versions.txt`*
 
 Release titles use the last version listed in `game-versions.txt`, for example **60 FPS Interpolation — Repentance+ 1.9.7.17**, while each release includes all supported versions.
 
-Each release includes one ZIP per supported game version, named `isaac-interpolation-<game-version>.zip`, and `SHA256SUMS.txt`. Each ZIP contains only `dinput8.dll` and `interpol.ini`. Publication happens only after every version builds and all packages are uploaded. Previous releases remain available.
+Each release includes one ZIP per supported game version and `SHA256SUMS.txt`. The ZIP filenames identify the DLC and version, such as `isaac-interpolation-repentance-1.7.9b.zip` and `isaac-interpolation-repentance-plus-1.9.7.17.zip`. Each ZIP contains only `dinput8.dll` and `interpol.ini`. Publication happens only after every version builds and all packages are uploaded. Previous releases remain available.
 
 To support a new game version:
 
